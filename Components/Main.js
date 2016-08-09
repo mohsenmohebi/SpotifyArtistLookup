@@ -68,6 +68,6 @@ const styles = StyleSheet.create({
         fontWeight: '800',
     },
     row: {
-        
+        margin: 16,
     },
 });
