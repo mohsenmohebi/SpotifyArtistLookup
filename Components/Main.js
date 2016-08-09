@@ -8,6 +8,7 @@ import {
   View,
 } from 'react-native';
 
+import ListItem from './ListItem';
 import clrs from '../Utils/clrs';
 
 export default class Main extends Component {
@@ -27,9 +28,10 @@ export default class Main extends Component {
 
 renderRow = (text , sId , rId) => {
  return(
-     <Text style={styles.row}>
-     {rId}. {text}
-     </Text>
+     <ListItem index={rId}
+        text={text}
+        image={null}
+        />
  );
 };
 
@@ -40,10 +42,11 @@ render(){
 
              <StatusBar barStyle='light-content' />
 
-             <TextInput style={styles.searchBox} />
+             <TextInput style={styles.searchBox} 
+             onChangeText={this.makeQuery} />
 
             <ListView dataSource={artists}
-                    style={{flex: 1 , alignSelf: 'stretch'}}
+                    style={styles.listView}
                     renderRow={this.renderRow} />
 
             </View>
@@ -69,5 +72,8 @@ const styles = StyleSheet.create({
     },
     row: {
         margin: 16,
+    },
+    listView:{
+        flex: 1 , alignSelf: 'stretch'
     },
 });
