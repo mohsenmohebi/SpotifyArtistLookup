@@ -14,23 +14,30 @@ import {searchFor} from '../Utils/fetcher';
 import {debounce} from 'lodash';
 
 export default class Main extends Component {
-    constructor(props){
+   constructor(props) {
         super(props);
-
         const dataSource = new ListView.DataSource({
             rowHasChanged: (r1, r2) => r1 !== r2,
         });
-       
        this.state = {artists: dataSource};
     
 }
 
 renderRow = ( artist , sId , id) => {
+    const { navigator } = this.props;
+    const ARTIST_STATE = {
+        id: 'ARTIST_DETAIL',
+        title: artist.name,
+        url: artist.external_urls.spotify,
+    }
+    
     const imageUrl = artist.images[0] ? artist.images[0].url : null;
  return(
      <ListItem index={id}
         text={artist.name}
         imageUrl={imageUrl}
+        navState={ ARTIST_STATE }
+        navigator= { navigator }
         />
  );
 };
@@ -66,6 +73,10 @@ render(){
         });
     },400);
 }
+
+Main.probTypes = {
+ navigator: React.PropTypes.object,
+};
 
 const styles = StyleSheet.create({
     container:{
