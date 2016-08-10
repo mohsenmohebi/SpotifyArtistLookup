@@ -10,6 +10,8 @@ import {
 
 import ListItem from './ListItem';
 import clrs from '../Utils/clrs';
+import {searchFor} from '../Utils/fetcher';
+import {debounce} from 'lodash';
 
 export default class Main extends Component {
     constructor(props){
@@ -19,24 +21,23 @@ export default class Main extends Component {
             rowHasChanged: (r1, r2) => r1 !== r2,
         });
        
-       const data = ['Spectacles' , 'Giraffe' , 'Turtule' , 'Shark' , 'Lamp' , 'Salt',
-       'Beef' , 'Drawer' , 'Brocolii' , 'Rasberies','Plate','Zibra'];
-
-       this.state = {artists: dataSource.cloneWithRows(data) };
+       this.state = {artists: dataSource};
     
 }
 
-renderRow = (text , sId , rId) => {
+renderRow = ( artist , sId , id) => {
+    const imageUrl = artist.images[0] ? artist.images[0].url : null;
  return(
-     <ListItem index={rId}
-        text={text}
-        image={null}
+     <ListItem index={id}
+        text={artist.name}
+        imageUrl={imageUrl}
         />
  );
 };
 
 render(){
-       const {artists} = this.state;
+       const { artists } = this.state;
+
         return(
             <View style={styles.container}>
 
@@ -45,13 +46,25 @@ render(){
              <TextInput style={styles.searchBox} 
              onChangeText={this.makeQuery} />
 
-            <ListView dataSource={artists}
-                    style={styles.listView}
-                    renderRow={this.renderRow} />
+            <ListView dataSource={ artists }
+                    style={ styles.listView }
+                    renderRow={ this.renderRow } />
 
             </View>
         );
     }
+
+    makeQuery = debounce(query=> {
+        searchFor(query)
+        .then(artists => {
+            this.setState({
+                artists: this.state.artists.cloneWithRows(artists),
+            });
+        })
+        .catch((error) => {
+            throw error;
+        });
+    },400);
 }
 
 const styles = StyleSheet.create({
